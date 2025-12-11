@@ -2,10 +2,15 @@
 import yargs from "yargs";
 import {hideBin} from "yargs/helpers";
 
+type DateOptions = {
+    year?: number;
+    month?: number;
+    date?: number;
+};
 
-const printISO = (date) => console.log(date.toISOString());
+const printISO = (date: Date): void => console.log(date.toISOString());
 
-const getCurrent = (option) => {
+const getCurrent = (option?: "year" | "month" | "date"): void => {
     const date = new Date();
     switch (option) {
         case "year":
@@ -20,9 +25,9 @@ const getCurrent = (option) => {
         default:
             printISO(date);
     }
-}
+};
 
-const modifyDate = (type, obj)=> {
+const modifyDate = (type: "add" | "sub", obj: DateOptions): void => {
     const date = new Date();
     const k = type === "add" ? 1 : -1;
 
@@ -31,15 +36,15 @@ const modifyDate = (type, obj)=> {
     if (obj.date) date.setDate(date.getDate() + k * obj.date);
 
     printISO(date);
-}
-
+};
 
 yargs(hideBin(process.argv))
     .command(
         "current",
         "Получить текущие дату/время",
         (yargs) =>
-            yargs.option("year", { alias: "y", type: "boolean" })
+            yargs
+                .option("year", { alias: "y", type: "boolean" })
                 .option("month", { alias: "m", type: "boolean" })
                 .option("date", { alias: "d", type: "boolean" }),
         (argv) => {
@@ -53,7 +58,8 @@ yargs(hideBin(process.argv))
         "add",
         "Получить дату в будущем",
         (yargs) =>
-            yargs.option("year", { alias: "y", type: "number" })
+            yargs
+                .option("year", { alias: "y", type: "number" })
                 .option("month", { alias: "m", type: "number" })
                 .option("date", { alias: "d", type: "number" }),
         (argv) => {
@@ -68,7 +74,8 @@ yargs(hideBin(process.argv))
         "sub",
         "Получить дату в прошлом",
         (yargs) =>
-            yargs.option("year", { alias: "y", type: "number" })
+            yargs
+                .option("year", { alias: "y", type: "number" })
                 .option("month", { alias: "m", type: "number" })
                 .option("date", { alias: "d", type: "number" }),
         (argv) => {
